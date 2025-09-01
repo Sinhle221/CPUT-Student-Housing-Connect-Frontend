@@ -12,20 +12,21 @@ import {
 
 export default function Dashboard() {
   return (
-    <div className="landlord-dashboard">
-      {/* Sidebar */}
-      <aside className="sidebar">
-        <div className="sidebar-profile">
-  <Link to="/landlord-profile" className="profile-link">
-  <p className="profile-role">Landlord</p>
-    <img
-      src="/profile-pic.jpg"
-      alt="Profile"
-      className="profile-img"
-    />
-    <span className="profile-name">John Doe</span>
-  </Link>
-</div>
+   <div className="dashboard-layout">
+         {/* Sidebar */}
+         <aside className="sidebar">
+           <div className="sidebar-profile">
+     <Link to="/landlord-profile" className="profile-link">
+     <p className="profile-role">Landlord</p>
+       <img
+         src="/profile-pic.jpg"
+         alt="Profile"
+         className="profile-img"
+       />
+       <span className="profile-name">John Doe</span>
+       
+     </Link>
+   </div>
 
         <nav>
           <ul>
@@ -119,7 +120,7 @@ export default function Dashboard() {
 
       {/* Styles */}
       <style>{`
-        .landlord-dashboard {
+        .dashboard-layout{
         display: flex;
         flex-direction: row;  /* side by side layout */
         height: 100vh;
@@ -160,15 +161,19 @@ export default function Dashboard() {
           color: #1485f7ff;
           font-weight: bold;
         }
-          font-size: 18px;
-          font-weight: bold;
-        }
 
         .profile-role {
   font-size: 20px; /* make it big */
   font-weight: bold;
   margin-bottom: 10px;
   color: #1485f7ff; /* adjust to match your theme */
+}
+          .profile-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: inherit; /* Keeps the white text */
 }
 
         .sidebar nav ul {

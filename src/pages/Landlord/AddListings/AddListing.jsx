@@ -5,20 +5,20 @@ import { FaHome, FaList, FaPlusCircle, FaUsers, FaBuilding } from "react-icons/f
 export default function AddListing() {
   return (
     <div className="dashboard-layout">
-      {/* Sidebar */}
-      <aside className="sidebar">
-        <div className="sidebar-profile">
-  <Link to="/landlord-profile" className="profile-Link">
-  <p className="profile-role">Landlord</p>
-    <img
-      src="/profile-pic.jpg"
-      alt="Profile"
-      className="profile-img"
-    />
-    <span className="profile-name">John Doe</span>
-    
-  </Link>
-</div>
+          {/* Sidebar */}
+          <aside className="sidebar">
+            <div className="sidebar-profile">
+      <Link to="/landlord-profile" className="profile-link">
+      <p className="profile-role">Landlord</p>
+        <img
+          src="/profile-pic.jpg"
+          alt="Profile"
+          className="profile-img"
+        />
+        <span className="profile-name">John Doe</span>
+        
+      </Link>
+    </div>
 
         <nav>
           <ul>
