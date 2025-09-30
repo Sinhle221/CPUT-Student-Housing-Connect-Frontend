@@ -119,7 +119,7 @@ export default function MyListings() {
 
         .profile-name {
           font-size: 18px;
-         color: #0055aa;
+         color: #1485f7ff;
           font-weight: bold;
         }
 
