@@ -1,22 +1,29 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink, Link } from "react-router-dom";
 import { FaHome, FaList, FaPlusCircle, FaUsers, FaBuilding } from "react-icons/fa";
 
 export default function MyListings() {
+  const [accommodations, setAccommodations] = useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:8080/Accommodation/getAllAccommodations")
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch accommodations");
+        return res.json();
+      })
+      .then((data) => setAccommodations(data))
+      .catch((err) => console.error(err));
+  }, []);
+
   return (
     <div className="dashboard-layout">
       {/* Sidebar */}
       <aside className="sidebar">
         <div className="sidebar-profile">
           <Link to="/landlord-profile" className="profile-link">
-          <p className="profile-role">Landlord</p>
-            <img
-              src="/profile-pic.jpg"
-              alt="Profile"
-              className="profile-img"
-            />
+            <p className="profile-role">Landlord</p>
+            <img src="/profile-pic.jpg" alt="Profile" className="profile-img" />
             <span className="profile-name">John Doe</span>
-            
           </Link>
         </div>
 
@@ -61,33 +68,33 @@ export default function MyListings() {
         </header>
 
         <section className="listing-grid">
-          <div className="listing-card">
-            <h3>Student Residence A</h3>
-            <p>12 Rooms · 8 Occupied</p>
-            <div className="progress-bar">
-              <span style={{ width: "67%" }}></span>
-            </div>
-          </div>
-
-          <div className="listing-card">
-            <h3>Student House B</h3>
-            <p>6 Rooms · 4 Occupied</p>
-            <div className="progress-bar">
-              <span style={{ width: "66%" }}></span>
-            </div>
-          </div>
-
-          <div className="listing-card">
-            <h3>Apartment C</h3>
-            <p>10 Rooms · 5 Occupied</p>
-            <div className="progress-bar">
-              <span style={{ width: "50%" }}></span>
-            </div>
-          </div>
+          {accommodations.length > 0 ? (
+            accommodations.map((acc) => (
+              <div className="listing-card" key={acc.accommodationID}>
+                <h3>{acc.name}</h3>
+                <p>
+                  {acc.totalRooms || 0} Rooms · {acc.occupiedRooms || 0} Occupied
+                </p>
+                <div className="progress-bar">
+                  <span
+                    style={{
+                      width: `${
+                        acc.totalRooms
+                          ? Math.round((acc.occupiedRooms / acc.totalRooms) * 100)
+                          : 0
+                      }%`,
+                    }}
+                  ></span>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p>No listings available</p>
+          )}
         </section>
       </main>
 
-      {/* Styles */}
+      {/* Styles (same as your version) */}
       <style>{`
         .dashboard-layout {
           display: flex;
@@ -119,24 +126,24 @@ export default function MyListings() {
 
         .profile-name {
           font-size: 18px;
-         color: #1485f7ff;
+          color: #1485f7ff;
           font-weight: bold;
         }
 
         .profile-role {
-  font-size: 20px; /* make it big */
-  font-weight: bold;
-  margin-bottom: 10px;
-  color: #1485f7ff; /* adjust to match your theme */
-}
-          .profile-link {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-decoration: none;
-  color: inherit; /* Keeps the white text */
-}
+          font-size: 20px;
+          font-weight: bold;
+          margin-bottom: 10px;
+          color: #1485f7ff;
+        }
 
+        .profile-link {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-decoration: none;
+          color: inherit;
+        }
 
         .sidebar nav ul {
           list-style: none;

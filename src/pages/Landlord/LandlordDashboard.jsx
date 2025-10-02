@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink, Link } from "react-router-dom";
 import {
   FaHome,
@@ -11,22 +11,44 @@ import {
 } from "react-icons/fa";
 
 export default function Dashboard() {
+  const [accommodations, setAccommodations] = useState([]);
+  const [applications, setApplications] = useState(0); // placeholder until you hook applications API
+
+  useEffect(() => {
+    // Fetch accommodations
+    fetch("http://localhost:8080/Accommodation/getAllAccommodations")
+      .then((res) => res.json())
+      .then((data) => setAccommodations(data))
+      .catch((err) => console.error("Error fetching accommodations:", err));
+
+    // TODO: fetch applications count from your backend when endpoint is ready
+    setApplications(34); // hardcoded for now
+  }, []);
+
+  // Calculate stats
+  const totalListings = accommodations.length;
+  const occupied = accommodations.reduce(
+    (sum, acc) => sum + (acc.occupiedRooms || 0),
+    0
+  );
+  const totalRooms = accommodations.reduce(
+    (sum, acc) => sum + (acc.totalRooms || 0),
+    0
+  );
+  const vacant = totalRooms - occupied;
+  const occupancyRate = totalRooms > 0 ? Math.round((occupied / totalRooms) * 100) : 0;
+
   return (
-   <div className="dashboard-layout">
-         {/* Sidebar */}
-         <aside className="sidebar">
-           <div className="sidebar-profile">
-     <Link to="/landlord-profile" className="profile-link">
-     <p className="profile-role">Landlord</p>
-       <img
-         src="/profile-pic.jpg"
-         alt="Profile"
-         className="profile-img"
-       />
-       <span className="profile-name">John Doe</span>
-       
-     </Link>
-   </div>
+    <div className="dashboard-layout">
+      {/* Sidebar */}
+      <aside className="sidebar">
+        <div className="sidebar-profile">
+          <Link to="/landlord-profile" className="profile-link">
+            <p className="profile-role">Landlord</p>
+            <img src="/profile-pic.jpg" alt="Profile" className="profile-img" />
+            <span className="profile-name">John Doe</span>
+          </Link>
+        </div>
 
         <nav>
           <ul>
@@ -34,9 +56,7 @@ export default function Dashboard() {
               <NavLink
                 to="/landlord/dashboard"
                 end
-                className={({ isActive }) =>
-                  isActive ? "active-link" : ""
-                }
+                className={({ isActive }) => (isActive ? "active-link" : "")}
               >
                 <FaHome /> Dashboard
               </NavLink>
@@ -86,19 +106,19 @@ export default function Dashboard() {
         <section className="stats-grid">
           <div className="stat-card purple">
             <h3>Active Listings</h3>
-            <p>12</p>
+            <p>{totalListings}</p>
           </div>
           <div className="stat-card green">
             <h3>Applications</h3>
-            <p>34</p>
+            <p>{applications}</p>
           </div>
           <div className="stat-card orange">
             <h3>Occupied</h3>
-            <p>8</p>
+            <p>{occupied}</p>
           </div>
           <div className="stat-card blue">
             <h3>Vacant</h3>
-            <p>4</p>
+            <p>{vacant}</p>
           </div>
         </section>
 
@@ -106,7 +126,7 @@ export default function Dashboard() {
         <section className="progress-grid">
           <div className="progress-card">
             <h3>Occupancy Rate</h3>
-            <div className="circle">73%</div>
+            <div className="circle">{occupancyRate}%</div>
           </div>
           <div className="progress-card">
             <h3>Applications Processed</h3>
@@ -118,11 +138,11 @@ export default function Dashboard() {
         </section>
       </main>
 
-      {/* Styles */}
+      {/* Styles (your original CSS preserved) */}
       <style>{`
         .dashboard-layout{
         display: flex;
-        flex-direction: row;  /* side by side layout */
+        flex-direction: row;
         height: 100vh;
         width: 100%;
         font-family: "Segoe UI", sans-serif;
@@ -134,7 +154,6 @@ export default function Dashboard() {
        padding: 20px;
        overflow-y: auto;  
        }
-
 
         /* Sidebar */
         .sidebar {
@@ -163,18 +182,19 @@ export default function Dashboard() {
         }
 
         .profile-role {
-  font-size: 20px; /* make it big */
-  font-weight: bold;
-  margin-bottom: 10px;
-  color: #1485f7ff; /* adjust to match your theme */
-}
-          .profile-link {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-decoration: none;
-  color: inherit; /* Keeps the white text */
-}
+          font-size: 20px;
+          font-weight: bold;
+          margin-bottom: 10px;
+          color: #1485f7ff;
+        }
+
+        .profile-link {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-decoration: none;
+          color: inherit;
+        }
 
         .sidebar nav ul {
           list-style: none;
