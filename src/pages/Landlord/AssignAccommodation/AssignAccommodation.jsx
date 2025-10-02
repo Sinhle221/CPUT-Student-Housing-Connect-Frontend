@@ -1,24 +1,91 @@
-import React from "react";
-import { NavLink , Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { NavLink, Link } from "react-router-dom";
 import { FaHome, FaList, FaPlusCircle, FaUsers, FaBuilding } from "react-icons/fa";
+import axios from "axios";
+
+const API_BASE = "http://localhost:8080"; // adjust if different
 
 export default function AssignAccommodation() {
+  const [students, setStudents] = useState([]);
+  const [accommodations, setAccommodations] = useState([]);
+  const [selectedStudent, setSelectedStudent] = useState("");
+  const [selectedAccommodation, setSelectedAccommodation] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    let mounted = true;
+    const fetchData = async () => {
+      try {
+        const [sRes, aRes] = await Promise.all([
+          axios.get(`${API_BASE}/students`), // ensure this endpoint exists
+          axios.get(`${API_BASE}/Accommodation/getAllAccommodations`)
+        ]);
+
+        if (!mounted) return;
+        setStudents(Array.isArray(sRes.data) ? sRes.data : []);
+        setAccommodations(Array.isArray(aRes.data) ? aRes.data : []);
+      } catch (err) {
+        console.error("Failed to load students or accommodations", err);
+        setError("Failed to load data from server.");
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    };
+
+    fetchData();
+    return () => { mounted = false; };
+  }, []);
+
+  const handleAssign = async (e) => {
+    e.preventDefault();
+    setError("");
+
+    if (!selectedStudent || !selectedAccommodation) {
+      setError("Please select both a student and an accommodation.");
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      await axios.post(`${API_BASE}/assign`, {
+        studentId: selectedStudent,
+        accommodationId: selectedAccommodation
+      });
+      alert("Accommodation assigned successfully!");
+      setSelectedStudent("");
+      setSelectedAccommodation("");
+    } catch (err) {
+      console.error("Assign failed", err);
+      setError("Failed to assign accommodation. See console for details.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  // helpers to cope with differing backend field names
+  const studentKey = (s) => s.id ?? s.studentID ?? s.studentId ?? s.studentId;
+  const studentLabel = (s) =>
+    (s.firstName && s.lastName) ? `${s.firstName} ${s.lastName}` :
+    s.name ?? s.studentName ?? s.email ?? `Student ${studentKey(s)}`;
+
+  const accommodationKey = (a) => a.accommodationID ?? a.id ?? a.accommodationId;
+  const accommodationLabel = (a) =>
+    a.address?.streetName ? `${a.address.streetName}, ${a.address.suburb ?? ""}` :
+    a.name ?? a.address?.suburb ?? `Accommodation ${accommodationKey(a)}`;
+
   return (
     <div className="dashboard-layout">
       {/* Sidebar */}
       <aside className="sidebar">
         <div className="sidebar-profile">
-  <Link to="/landlord-profile" className="profile-link">
-  <p className="profile-role">Landlord</p>
-    <img
-      src="/profile-pic.jpg"
-      alt="Profile"
-      className="profile-img"
-    />
-    <span className="profile-name">John Doe</span>
-    
-  </Link>
-</div>
+          <Link to="/landlord-profile" className="profile-link">
+            <p className="profile-role">Landlord</p>
+            <img src="/profile-pic.jpg" alt="Profile" className="profile-img" />
+            <span className="profile-name">John Doe</span>
+          </Link>
+        </div>
 
         <nav>
           <ul>
@@ -58,23 +125,49 @@ export default function AssignAccommodation() {
         </header>
 
         <div className="assign-card">
-          <form className="assign-form">
-            <label>Select Student</label>
-            <select>
-              <option>-- Choose Student --</option>
-              <option>John Doe</option>
-              <option>Jane Smith</option>
-            </select>
+          {loading ? (
+            <p>Loading...</p>
+          ) : (
+            <form className="assign-form" onSubmit={handleAssign}>
+              {error && <p style={{ color: "red" }}>{error}</p>}
 
-            <label>Select Accommodation</label>
-            <select>
-              <option>-- Choose Accommodation --</option>
-              <option>Residence A</option>
-              <option>House B</option>
-            </select>
+              <label>Select Student</label>
+              <select
+                value={selectedStudent}
+                onChange={(e) => setSelectedStudent(e.target.value)}
+              >
+                <option value="">-- Choose Student --</option>
+                {students.map((student) => {
+                  const key = studentKey(student);
+                  return (
+                    <option key={key} value={key}>
+                      {studentLabel(student)}
+                    </option>
+                  );
+                })}
+              </select>
 
-            <button type="submit" className="btn-primary">Assign</button>
-          </form>
+              <label>Select Accommodation</label>
+              <select
+                value={selectedAccommodation}
+                onChange={(e) => setSelectedAccommodation(e.target.value)}
+              >
+                <option value="">-- Choose Accommodation --</option>
+                {accommodations.map((acc) => {
+                  const key = accommodationKey(acc);
+                  return (
+                    <option key={key} value={key}>
+                      {accommodationLabel(acc)}
+                    </option>
+                  );
+                })}
+              </select>
+
+              <button type="submit" className="btn-primary" disabled={submitting}>
+                {submitting ? "Assigning..." : "Assign"}
+              </button>
+            </form>
+          )}
         </div>
       </main>
 

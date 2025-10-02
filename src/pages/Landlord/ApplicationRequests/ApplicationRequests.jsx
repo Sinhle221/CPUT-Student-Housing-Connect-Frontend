@@ -1,24 +1,66 @@
-import React from "react";
-import { NavLink , Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { NavLink, Link } from "react-router-dom";
 import { FaHome, FaList, FaPlusCircle, FaUsers, FaBuilding } from "react-icons/fa";
+import axios from "axios";
 
 export default function ApplicationRequests() {
+  const [applications, setApplications] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch applications from backend
+  useEffect(() => {
+    const fetchApplications = async () => {
+      try {
+        const res = await axios.get("http://localhost:8080/applications"); // adjust to your endpoint
+        setApplications(res.data);
+      } catch (err) {
+        console.error("Error fetching applications:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchApplications();
+  }, []);
+
+  // Approve application
+  const handleApprove = async (id) => {
+    try {
+      await axios.put(`http://localhost:8080/applications/${id}/approve`);
+      setApplications((prev) =>
+        prev.map((app) =>
+          app.id === id ? { ...app, status: "APPROVED" } : app
+        )
+      );
+    } catch (err) {
+      console.error("Error approving application:", err);
+    }
+  };
+
+  // Revoke application
+  const handleRevoke = async (id) => {
+    try {
+      await axios.put(`http://localhost:8080/applications/${id}/revoke`);
+      setApplications((prev) =>
+        prev.map((app) =>
+          app.id === id ? { ...app, status: "REVOKED" } : app
+        )
+      );
+    } catch (err) {
+      console.error("Error revoking application:", err);
+    }
+  };
+
   return (
     <div className="dashboard-layout">
       {/* Sidebar */}
       <aside className="sidebar">
         <div className="sidebar-profile">
-  <Link to="/landlord-profile" className="profile-link">
-  <p className="profile-role">Landlord</p>
-    <img
-      src="/profile-pic.jpg"
-      alt="Profile"
-      className="profile-img"
-    />
-    <span className="profile-name">John Doe</span>
-    
-  </Link>
-</div>
+          <Link to="/landlord-profile" className="profile-link">
+            <p className="profile-role">Landlord</p>
+            <img src="/profile-pic.jpg" alt="Profile" className="profile-img" />
+            <span className="profile-name">John Doe</span>
+          </Link>
+        </div>
 
         <nav>
           <ul>
@@ -58,34 +100,56 @@ export default function ApplicationRequests() {
         </header>
 
         <div className="applications-card">
-          <table>
-            <thead>
-              <tr>
-                <th>Student</th>
-                <th>Accommodation</th>
-                <th>Status</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>John Doe</td>
-                <td>Student Residence A</td>
-                <td><span className="badge pending">Pending</span></td>
-                <td>
-                  <button className="btn-primary">Approve</button>
-                </td>
-              </tr>
-              <tr>
-                <td>Jane Smith</td>
-                <td>House B</td>
-                <td><span className="badge approved">Approved</span></td>
-                <td>
-                  <button className="btn-primary">Revoke</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          {loading ? (
+            <p>Loading applications...</p>
+          ) : applications.length === 0 ? (
+            <p>No applications found.</p>
+          ) : (
+            <table>
+              <thead>
+                <tr>
+                  <th>Student</th>
+                  <th>Accommodation</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {applications.map((app) => (
+                  <tr key={app.id}>
+                    <td>{app.studentName}</td>
+                    <td>{app.accommodationName}</td>
+                    <td>
+                      <span
+                        className={`badge ${
+                          app.status.toLowerCase()
+                        }`}
+                      >
+                        {app.status}
+                      </span>
+                    </td>
+                    <td>
+                      {app.status === "PENDING" ? (
+                        <button
+                          className="btn-primary"
+                          onClick={() => handleApprove(app.id)}
+                        >
+                          Approve
+                        </button>
+                      ) : (
+                        <button
+                          className="btn-primary"
+                          onClick={() => handleRevoke(app.id)}
+                        >
+                          Revoke
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </main>
 
@@ -126,19 +190,18 @@ export default function ApplicationRequests() {
         }
 
         .profile-role {
-  font-size: 20px; /* make it big */
-  font-weight: bold;
-  margin-bottom: 10px;
-  color: #1485f7ff; /* adjust to match your theme */
-}
-          .profile-link {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-decoration: none;
-  color: inherit; /* Keeps the white text */
-}
-
+          font-size: 20px;
+          font-weight: bold;
+          margin-bottom: 10px;
+          color: #1485f7ff;
+        }
+        .profile-link {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-decoration: none;
+          color: inherit;
+        }
 
         .sidebar nav ul {
           list-style: none;
@@ -212,6 +275,7 @@ export default function ApplicationRequests() {
           border-radius: 6px;
           font-size: 13px;
           font-weight: 500;
+          text-transform: capitalize;
         }
 
         .badge.pending {
@@ -224,7 +288,7 @@ export default function ApplicationRequests() {
           color: #155724;
         }
 
-        .badge.rejected {
+        .badge.revoked {
           background: #f8d7da;
           color: #721c24;
         }

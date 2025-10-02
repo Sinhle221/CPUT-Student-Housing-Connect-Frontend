@@ -1,24 +1,78 @@
-import React from "react";
-import { NavLink, Link } from "react-router-dom";
+import React, { useState } from "react";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import { FaHome, FaList, FaPlusCircle, FaUsers, FaBuilding } from "react-icons/fa";
+import axios from "axios";
 
 export default function AddListing() {
+  const navigate = useNavigate();
+
+  // Form state
+  const [formData, setFormData] = useState({
+    accommodationName: "",
+    numberOfRooms: "",
+    description: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+
+  // Handle input changes
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  // Handle submit
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    // Build request body according to backend model
+    const newListing = {
+      rent: 3500, // You can add extra fields later or map from inputs
+      wifiAvailable: true,
+      furnished: false,
+      distanceFromCampus: 2,
+      utilitiesIncluded: false,
+      roomType: "SINGLE",
+      bathroomType: "SHARED",
+      accommodationStatus: "AVAILABLE",
+      address: {
+        streetNumber: "123",
+        streetName: "Main Street",
+        suburb: "Mowbray",
+        city: "Cape Town",
+        postalCode: 7700,
+      },
+      description: formData.description,
+    };
+
+    try {
+      const res = await axios.post("http://localhost:8080/Accommodation/create", newListing, {
+        headers: { "Content-Type": "application/json" },
+      });
+      console.log("Created:", res.data);
+
+      alert("Listing created successfully!");
+      navigate("/my-listings"); // Redirect after success
+    } catch (err) {
+      console.error("Error creating listing:", err);
+      alert("Failed to create listing.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="dashboard-layout">
-          {/* Sidebar */}
-          <aside className="sidebar">
-            <div className="sidebar-profile">
-      <Link to="/landlord-profile" className="profile-link">
-      <p className="profile-role">Landlord</p>
-        <img
-          src="/profile-pic.jpg"
-          alt="Profile"
-          className="profile-img"
-        />
-        <span className="profile-name">John Doe</span>
-        
-      </Link>
-    </div>
+      {/* Sidebar */}
+      <aside className="sidebar">
+        <div className="sidebar-profile">
+          <Link to="/landlord-profile" className="profile-link">
+            <p className="profile-role">Landlord</p>
+            <img src="/profile-pic.jpg" alt="Profile" className="profile-img" />
+            <span className="profile-name">John Doe</span>
+          </Link>
+        </div>
 
         <nav>
           <ul>
@@ -58,12 +112,32 @@ export default function AddListing() {
         </header>
 
         <div className="form-card">
-          <form className="listing-form">
-            <input type="text" placeholder="Accommodation Name" />
-            <input type="number" placeholder="Number of Rooms" />
-            <textarea placeholder="Description"></textarea>
-            <button type="submit" className="btn-primary">
-              Save Listing
+          <form className="listing-form" onSubmit={handleSubmit}>
+            <input
+              type="text"
+              name="accommodationName"
+              placeholder="Accommodation Name"
+              value={formData.accommodationName}
+              onChange={handleChange}
+              required
+            />
+            <input
+              type="number"
+              name="numberOfRooms"
+              placeholder="Number of Rooms"
+              value={formData.numberOfRooms}
+              onChange={handleChange}
+              required
+            />
+            <textarea
+              name="description"
+              placeholder="Description"
+              value={formData.description}
+              onChange={handleChange}
+              required
+            ></textarea>
+            <button type="submit" className="btn-primary" disabled={loading}>
+              {loading ? "Saving..." : "Save Listing"}
             </button>
           </form>
         </div>
@@ -106,19 +180,18 @@ export default function AddListing() {
         }
 
         .profile-role {
-  font-size: 20px; /* make it big */
-  font-weight: bold;
-  margin-bottom: 10px;
-  color: #1485f7ff; /* adjust to match your theme */
-}
-          .profile-link {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-decoration: none;
-  color: inherit; /* Keeps the white text */
-}
-
+          font-size: 20px;
+          font-weight: bold;
+          margin-bottom: 10px;
+          color: #1485f7ff;
+        }
+        .profile-link {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-decoration: none;
+          color: inherit;
+        }
 
         .sidebar nav ul {
           list-style: none;
