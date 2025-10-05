@@ -3,6 +3,16 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/shared/ProtectedRoute';
 
+import LandlordLogin from "./pages/Landlord/LandlordAuth/LandlordLogin";
+import LandlordSignUp from "./pages/Landlord/LandlordAuth/LandlordSignUp";
+import LandlordDashboard from "./pages/Landlord/LandlordDashboard";
+import MyListings from "./pages/Landlord/MyListings/MyListings";
+import AddListing from "./pages/Landlord/AddListings/AddListing";
+import AssignAccommodation from "./pages/Landlord/AssignAccommodation/AssignAccommodation";
+import ApplicationsRequests from "./pages/Landlord/ApplicationRequests/ApplicationRequests";
+import LandlordProfile from "./pages/Landlord/LndlordProfile";
+
+
 import LandingPage from "./pages/Shared/LandingPage";
 import LoginPage from "./pages/Shared/Login";
 import RoleSelectPage from "./pages/Shared/RoleSelectPage.jsx";
