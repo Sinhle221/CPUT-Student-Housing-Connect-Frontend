@@ -3,7 +3,7 @@ import { NavLink, Link, useNavigate } from "react-router-dom";
 import { FaHome, FaList, FaPlusCircle, FaUsers, FaBuilding } from "react-icons/fa";
 import axios from "axios";
 
-export default function AddListing() {
+export default function AddAccomodations() {
   const navigate = useNavigate();
 
   // Form state
@@ -82,13 +82,13 @@ export default function AddListing() {
               </NavLink>
             </li>
             <li>
-              <NavLink to="/my-listings" end>
-                <FaList /> My Listings
+              <NavLink to="/my-accomodations" end>
+                <FaList /> My Accomodations
               </NavLink>
             </li>
             <li>
-              <NavLink to="/add-listing" end className="active-link">
-                <FaPlusCircle /> Add Listing
+              <NavLink to="/add-accomodation" end className="active-link">
+                <FaPlusCircle /> Add Accomodation
               </NavLink>
             </li>
             <li>
@@ -99,6 +99,11 @@ export default function AddListing() {
             <li>
               <NavLink to="/assign-accommodation" end>
                 <FaBuilding /> Assign Accommodation
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/" >
+                <FaBuilding /> Logout
               </NavLink>
             </li>
           </ul>

@@ -6,8 +6,8 @@ import ProtectedRoute from './components/shared/ProtectedRoute';
 import LandlordLogin from "./pages/Landlord/LandlordAuth/LandlordLogin";
 import LandlordSignUp from "./pages/Landlord/LandlordAuth/LandlordSignUp";
 import LandlordDashboard from "./pages/Landlord/LandlordDashboard";
-import MyListings from "./pages/Landlord/MyListings/MyListings";
-import AddListing from "./pages/Landlord/AddListings/AddListing";
+import MyAccomodations from "./pages/Landlord/MyAccomodations/MyAccomodations";
+import AddAccomodation from "./pages/Landlord/AddAccomodation/AddAccomodation";
 import AssignAccommodation from "./pages/Landlord/AssignAccommodation/AssignAccommodation";
 import ApplicationsRequests from "./pages/Landlord/ApplicationRequests/ApplicationRequests";
 import LandlordProfile from "./pages/Landlord/LndlordProfile";
@@ -44,6 +44,7 @@ function App() {
           <Route path="/applications-requests" element={<ApplicationRequests />} />
           <Route path="/assign-accommodation" element={<AssignAccommodation />} />
 
+<<<<<<< HEAD
           {/* Student routes */}
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
@@ -69,6 +70,20 @@ function App() {
         </Routes>
       </Router>
     </AuthProvider>
+=======
+        {/* Landlord routes */}
+        <Route path="/landlord/login" element={<LandlordLogin />} />
+        <Route path="/landlord/signup" element={<LandlordSignUp />} />
+        <Route path="/landlord-profile" element={<LandlordProfile />} />
+        <Route path="/landlord/dashboard" element={<LandlordDashboard />} />
+        <Route path="/my-accomodations" element={<MyAccomodations />} />
+        <Route path="/add-accomodation" element={<AddAccomodation />} />
+        <Route path="/applications-requests" element={<ApplicationsRequests />} />
+        <Route path="/assign-accommodation" element={<AssignAccommodation />} />
+
+      </Routes>
+    </Router>
+>>>>>>> 8f2d3e0 (rename)
   );
 }
 

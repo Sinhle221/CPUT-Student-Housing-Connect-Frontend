@@ -22,7 +22,7 @@ export default function Dashboard() {
       .catch((err) => console.error("Error fetching accommodations:", err));
 
     // TODO: fetch applications count from your backend when endpoint is ready
-    setApplications(34); // hardcoded for now
+    setApplications(0); // hardcoded for now
   }, []);
 
   // Calculate stats
@@ -62,13 +62,13 @@ export default function Dashboard() {
               </NavLink>
             </li>
             <li>
-              <NavLink to="/my-listings" end>
-                <FaList /> My Listings
+              <NavLink to="/my-accomodations" end>
+                <FaList /> My Accomodationss
               </NavLink>
             </li>
             <li>
-              <NavLink to="/add-listing" end>
-                <FaPlusCircle /> Add Listing
+              <NavLink to="/add-accomodation" end>
+                <FaPlusCircle /> Add Accomodation
               </NavLink>
             </li>
             <li>
@@ -81,6 +81,11 @@ export default function Dashboard() {
                 <FaBuilding /> Assign Accommodation
               </NavLink>
             </li>
+            <li>
+              <NavLink to="/" >
+                 <FaBuilding /> Logout
+               </NavLink>
+               </li>
           </ul>
         </nav>
       </aside>
@@ -102,7 +107,7 @@ export default function Dashboard() {
           </div>
         </header>
 
-        {/* Stats */}
+        {/* Stats
         <section className="stats-grid">
           <div className="stat-card purple">
             <h3>Active Listings</h3>
@@ -120,7 +125,7 @@ export default function Dashboard() {
             <h3>Vacant</h3>
             <p>{vacant}</p>
           </div>
-        </section>
+        </section> */}
 
         {/* Progress Section */}
         <section className="progress-grid">
@@ -131,9 +136,9 @@ export default function Dashboard() {
           <div className="progress-card">
             <h3>Applications Processed</h3>
             <div className="progress-bar">
-              <span style={{ width: "60%" }}></span>
+              <span style={{ width: "0%" }}></span>
             </div>
-            <p>60% Completed</p>
+            <p>0% Completed</p>
           </div>
         </section>
       </main>

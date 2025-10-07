@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { NavLink, Link } from "react-router-dom";
 import { FaHome, FaList, FaPlusCircle, FaUsers, FaBuilding } from "react-icons/fa";
 
-export default function MyListings() {
+export default function MyAccomodations() {
   const [accommodations, setAccommodations] = useState([]);
 
   useEffect(() => {
@@ -35,13 +35,13 @@ export default function MyListings() {
               </NavLink>
             </li>
             <li>
-              <NavLink to="/my-listings" end className="active-link">
-                <FaList /> My Listings
+              <NavLink to="/my-accomodations" end className="active-link">
+                <FaList /> My Accomodations
               </NavLink>
             </li>
             <li>
-              <NavLink to="/add-listing" end>
-                <FaPlusCircle /> Add Listing
+              <NavLink to="/add-accomodation" end>
+                <FaPlusCircle /> Add Accomodation
               </NavLink>
             </li>
             <li>
@@ -54,6 +54,11 @@ export default function MyListings() {
                 <FaBuilding /> Assign Accommodation
               </NavLink>
             </li>
+            <li>
+              <NavLink to="/" >
+                <FaBuilding /> Logout
+              </NavLink>
+            </li> 
           </ul>
         </nav>
       </aside>

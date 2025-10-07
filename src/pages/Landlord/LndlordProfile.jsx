@@ -35,8 +35,13 @@ export default function LandlordProfilePage() {
               </Link>
             </li>
             <li>
-              <Link to="/my-listings">
-                <FaList style={{ marginRight: "8px" }} /> My Listings
+              <Link to="/my-accomodations">
+                <FaList style={{ marginRight: "8px" }} /> My Accomodations
+              </Link>
+            </li>
+            <li>
+              <Link to="/add-accomodation">
+                <FaList style={{ marginRight: "8px" }} /> Add Accomodation
               </Link>
             </li>
             <li>
@@ -52,6 +57,11 @@ export default function LandlordProfilePage() {
             <li>
               <Link to="/profile">
                 <FaUser style={{ marginRight: "8px" }} /> Profile
+              </Link>
+            </li>
+            <li>
+              <Link to="/" >
+                <FaBuilding style={{ marginRight: "8px" }}/> Logout
               </Link>
             </li>
           </ul>
