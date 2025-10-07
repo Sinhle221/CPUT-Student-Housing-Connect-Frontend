@@ -48,7 +48,7 @@ function StudentDashboard() {
 
         console.log('Fetching student data for ID:', studentId); // Debug log
         
-        const response = await fetch(`http://localhost:8080/HouseConnect/Student/read/${studentId}`, {
+        const response = await fetch(`/HouseConnect/Student/read/${studentId}`, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -145,7 +145,7 @@ function StudentDashboard() {
         }
       };
 
-      const response = await fetch(`http://localhost:8080/HouseConnect/Student/update`, {
+      const response = await fetch(`/HouseConnect/Student/update`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -190,7 +190,7 @@ function StudentDashboard() {
         }
       };
 
-      const response = await fetch(`http://localhost:8080/HouseConnect/Student/update`, {
+      const response = await fetch(`/HouseConnect/Student/update`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,

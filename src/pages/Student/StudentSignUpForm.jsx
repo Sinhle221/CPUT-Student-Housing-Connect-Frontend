@@ -97,9 +97,9 @@ function StudentSignUpForm() {
         console.log("Payload being sent to server:", JSON.stringify(payload, null, 2)); // Log the payload
 
         try {
-            const response = await fetch('http://localhost:8080/HouseConnect/UserAuthentication/api/auth/signup/student', {
+            const response = await fetch('/HouseConnect/UserAuthentication/api/auth/signup/student', {
                 method: 'POST',
-                headers: { 
+                headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(payload),

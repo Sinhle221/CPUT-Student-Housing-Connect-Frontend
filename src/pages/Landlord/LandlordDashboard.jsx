@@ -1,5 +1,6 @@
 import React from "react";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 import {
   FaHome,
   FaList,
@@ -8,9 +9,18 @@ import {
   FaBuilding,
   FaBell,
   FaSearch,
+  FaSignOutAlt,
 } from "react-icons/fa";
 
 export default function Dashboard() {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
   return (
    <div className="dashboard-layout">
          {/* Sidebar */}
@@ -60,6 +70,30 @@ export default function Dashboard() {
               <NavLink to="/assign-accommodation" end>
                 <FaBuilding /> Assign Accommodation
               </NavLink>
+            </li>
+            <li>
+              <button
+                onClick={handleLogout}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#ddd',
+                  fontSize: '15px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  padding: '10px',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  width: '100%',
+                  textAlign: 'left',
+                  transition: 'background 0.3s',
+                }}
+                onMouseEnter={(e) => e.target.style.background = '#483ab0'}
+                onMouseLeave={(e) => e.target.style.background = 'none'}
+              >
+                <FaSignOutAlt /> Logout
+              </button>
             </li>
           </ul>
         </nav>

@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (username, password) => {
     try {
-      const response = await fetch('http://localhost:8080/HouseConnect/UserAuthentication/login', {
+      const response = await fetch('/HouseConnect/UserAuthentication/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -89,11 +89,35 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  const registerLandlord = async (landlordData) => {
+    try {
+      const response = await fetch('/HouseConnect/UserAuthentication/api/auth/signup/landlord', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(landlordData),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        return { success: true, data };
+      } else {
+        const errorData = await response.json();
+        return { success: false, error: errorData.error || 'Registration failed' };
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      return { success: false, error: 'Network error. Please try again.' };
+    }
+  };
+
   const value = {
     user,
     token,
     login,
     logout,
+    registerLandlord,
     loading,
     isAuthenticated: !!user && !!token
   };

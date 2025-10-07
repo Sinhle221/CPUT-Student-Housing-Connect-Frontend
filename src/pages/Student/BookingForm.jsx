@@ -68,7 +68,7 @@ const BookingForm = ({ accommodation }) => {
       };
 
       const response = await fetch(
-        `http://localhost:8080/HouseConnect/Booking/create`,
+        `/HouseConnect/Booking/create`,
         {
           method: "POST",
           headers: {

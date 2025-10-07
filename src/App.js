@@ -9,7 +9,7 @@ import LandlordDashboard from "./pages/Landlord/LandlordDashboard";
 import MyListings from "./pages/Landlord/MyListings/MyListings";
 import AddListing from "./pages/Landlord/AddListings/AddListing";
 import AssignAccommodation from "./pages/Landlord/AssignAccommodation/AssignAccommodation";
-import ApplicationsRequests from "./pages/Landlord/ApplicationRequests/ApplicationRequests";
+import ApplicationRequests from "./pages/Landlord/ApplicationRequests/ApplicationRequests";
 import LandlordProfile from "./pages/Landlord/LndlordProfile";
 
 
@@ -22,12 +22,6 @@ import StudentDashboard from "./pages/Student/Dashboard/StudentDashboard.jsx";
 import BookingForm from "./pages/Student/BookingForm.jsx";
 import LandLordSignup from "./pages/Landlord/LandLordSignup";
 
-// Landlord components
-import MyListings from "./pages/Landlord/MyListings/MyListings";
-import AddListing from "./pages/Landlord/AddListings/AddListing";
-import ApplicationRequests from "./pages/Landlord/ApplicationRequests/ApplicationRequests";
-import AssignAccommodation from "./pages/Landlord/AssignAccommodation/AssignAccommodation";
-
 
 
 function App() {
@@ -39,6 +33,14 @@ function App() {
           <Route path="/landlord/login" element={<LoginPage />} />
           <Route path="/landlord/signup" element={<RoleSelectPage />} />
           <Route path="/landlord/signup/form" element={<LandLordSignup />} />
+          <Route
+            path="/landlord/dashboard"
+            element={
+              <ProtectedRoute>
+                <LandlordDashboard />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/my-listings" element={<MyListings />} />
           <Route path="/add-listing" element={<AddListing />} />
           <Route path="/applications-requests" element={<ApplicationRequests />} />

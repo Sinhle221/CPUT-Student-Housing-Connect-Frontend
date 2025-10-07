@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 
 function LandLordSignup() {
     const [step, setStep] = useState(1);
@@ -22,6 +23,7 @@ function LandLordSignup() {
 
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const { registerLandlord } = useAuth();
 
     useEffect(() => {
         setLandlordData(prev => ({
@@ -69,38 +71,31 @@ function LandLordSignup() {
             landlordFirstName: landlordData.landlordFirstName,
             landlordLastName: landlordData.landlordLastName,
             password: landlordData.password,
-            isVerified: landlordData.isVerified ? 1 : 0,
-            dateRegistered: landlordData.dateRegistered,
+            isVerified: false, // Default to false for new registrations
             contact: {
                 email: contactData.email,
                 phoneNumber: contactData.phoneNumber,
                 alternatePhoneNumber: contactData.alternatePhoneNumber,
-                isEmailVerified: contactData.isEmailVerified ? 1 : 0,
-                isPhoneVerified: contactData.isPhoneVerified ? 1 : 0,
+                isEmailVerified: contactData.isEmailVerified,
+                isPhoneVerified: contactData.isPhoneVerified,
                 preferredContactMethod: contactData.preferredContactMethod,
             }
         };
 
         try {
-        const response = await fetch('http://localhost:8080/Landlord/create', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
-        });
-
-        if (response.ok) {
-            alert('Registration successful! Welcome to our platform.');
-            navigate('/login');
-        } else {
-            const text = await response.text();
-            alert(`Registration failed: ${text || 'Unknown error occurred'}`);
+            const result = await registerLandlord(payload);
+            if (result.success) {
+                alert('Registration successful! Welcome to our platform.');
+                navigate('/login');
+            } else {
+                alert(`Registration failed: ${result.error}`);
+            }
+        } catch (error) {
+            console.error('Registration error:', error);
+            alert('Error connecting to server. Please try again.');
+        } finally {
+            setLoading(false);
         }
-    } catch (error) {
-        console.error('Registration error:', error);
-        alert('Error connecting to server. Please try again.');
-    } finally {
-        setLoading(false);
-    }
     };
 
     return (

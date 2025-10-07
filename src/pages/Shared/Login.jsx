@@ -8,7 +8,7 @@ function LoginForm() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, user } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -22,9 +22,14 @@ function LoginForm() {
     }
 
     const result = await login(username, password);
-    
+
     if (result.success) {
-      navigate('/dashboard');
+      // Navigate based on user role
+      if (user && user.role === 'LANDLORD') {
+        navigate('/landlord/dashboard');
+      } else {
+        navigate('/dashboard');
+      }
     } else {
       setError(result.error);
     }
