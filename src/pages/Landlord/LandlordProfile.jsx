@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaHome,
   FaList,
@@ -7,25 +7,33 @@ import { FaHome,
    FaCheckCircle,
     FaTimesCircle,
   FaBuilding, } from "react-icons/fa";
+import { useAuth } from "../../contexts/AuthContext";
+import apiClient from "../../apiClient";
 
 export default function LandlordProfilePage() {
-  // Example landlord data
-  const landlord = {
-    landlordID: 1,
-    landlordFirstName: "John",
-    landlordLastName: "Doe",
-    isVerified: true,
-    dateRegistered: "2023-04-15",
-    password: "********",
-    profilePicture: "/profile-pic.jpg", // Path to profile picture
-  };
+  const { user } = useAuth();
+  const [landlord, setLandlord] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (user?.landlordId) {
+      apiClient.get(`/landlord/${user.landlordId}`)
+        .then(res => setLandlord(res.data))
+        .catch(err => console.error('Error fetching landlord:', err))
+        .finally(() => setLoading(false));
+    }
+  }, [user]);
 
   return (
     <div className="landlord-profile-page">
       {/* Sidebar can be reused from Dashboard if needed */}
       <aside className="sidebar">
       <div className="sidebar-profile">
-        <p className="profile-role">Landlord</p>
+        <Link to="/landlord-profile" className="profile-link">
+          <p className="profile-role">Landlord</p>
+          <img src="/profile-pic.jpg" alt="Profile" className="profile-img" />
+          <span className="profile-name">{landlord ? `${landlord.landlordFirstName} ${landlord.landlordLastName}` : 'Loading...'}</span>
+        </Link>
       </div>
       <nav>
         <ul>
@@ -35,8 +43,8 @@ export default function LandlordProfilePage() {
             </Link>
           </li>
           <li>
-            <Link to="/my-listings">
-              <FaList style={{ marginRight: "8px" }} /> My Listings
+            <Link to="/my-accomodations">
+              <FaList style={{ marginRight: "8px" }} /> My Accomodations
             </Link>
           </li>
           <li>
@@ -50,8 +58,13 @@ export default function LandlordProfilePage() {
             </Link>
           </li>
           <li>
-            <Link to="/profile">
-              <FaUser style={{ marginRight: "8px" }} /> Profile
+            <Link to="/add-accomodation">
+              <FaBuilding style={{ marginRight: "8px" }} /> Add Accomodation
+            </Link>
+          </li>
+          <li>
+            <Link to="/">
+              <FaUser style={{ marginRight: "8px" }} /> Logout
             </Link>
           </li>
         </ul>
@@ -65,33 +78,60 @@ export default function LandlordProfilePage() {
         </header>
 
         <section className="profile-details">
-          <div className="profile-card">
-            <img
-              src={landlord.profilePicture}
-              alt="Profile"
-              className="profile-img-large"
-            />
-            <h2>
-              {landlord.landlordFirstName} {landlord.landlordLastName}{" "}
-              {landlord.isVerified ? (
-                <FaCheckCircle className="verified-icon" />
-              ) : (
-                <FaTimesCircle className="unverified-icon" />
+          {loading ? (
+            <p>Loading profile...</p>
+          ) : landlord ? (
+            <div className="profile-card">
+              <img
+                src={landlord.profilePicture || "/profile-pic.jpg"}
+                alt="Profile"
+                className="profile-img-large"
+              />
+              <h2>
+                {landlord.landlordFirstName} {landlord.landlordLastName}{" "}
+                {landlord.isVerified ? (
+                  <FaCheckCircle className="verified-icon" />
+                ) : (
+                  <FaTimesCircle className="unverified-icon" />
+                )}
+              </h2>
+              <p>
+                <strong>Landlord ID:</strong> {landlord.landlordID}
+              </p>
+              <p>
+                <strong>Date Registered:</strong> {landlord.dateRegistered}
+              </p>
+              {landlord.contact && (
+                <>
+                  <p>
+                    <strong>Email:</strong> {landlord.contact.email}
+                  </p>
+                  <p>
+                    <strong>Phone Number:</strong> {landlord.contact.phoneNumber}
+                  </p>
+                  {landlord.contact.alternatePhoneNumber && (
+                    <p>
+                      <strong>Alternate Phone Number:</strong> {landlord.contact.alternatePhoneNumber}
+                    </p>
+                  )}
+                  <p>
+                    <strong>Email Verified:</strong> {landlord.contact.isEmailVerified ? 'Yes' : 'No'}
+                  </p>
+                  <p>
+                    <strong>Phone Verified:</strong> {landlord.contact.isPhoneVerified ? 'Yes' : 'No'}
+                  </p>
+                  <p>
+                    <strong>Preferred Contact Method:</strong> {landlord.contact.preferredContactMethod}
+                  </p>
+                </>
               )}
-            </h2>
-            <p>
-              <strong>Landlord ID:</strong> {landlord.landlordID}
-            </p>
-            <p>
-              <strong>Date Registered:</strong> {landlord.dateRegistered}
-            </p>
-            <p>
-              <strong>Password:</strong> {landlord.password}
-            </p>
-            <Link to="/edit-profile">
-              <button className="btn-primary">Edit Profile</button>
-            </Link>
-          </div>
+              <Link to="/edit-profile">
+                <button className="btn-primary">Edit Profile</button>
+              </Link>
+            </div>
+          ) : (
+            <p>Failed to load profile.</p>
+          )}
         </section>
       </main>
 
@@ -128,12 +168,20 @@ export default function LandlordProfilePage() {
           font-weight: bold;
         }
 
-         .profile-role {
+        .profile-role {
   font-size: 20px; /* make it big */
   font-weight: bold;
   margin-bottom: 10px;
   color: #1485f7ff; /* adjust to match your theme */
 }
+
+        .profile-link {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-decoration: none;
+          color: inherit;
+        }
 
         .sidebar nav ul {
           list-style: none;

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import { FaHome, FaList, FaPlusCircle, FaUsers, FaBuilding } from "react-icons/fa";
-import axios from "axios";
+import apiClient from "../../../apiClient";
 
 export default function AddAccomodations() {
   const navigate = useNavigate();
@@ -11,14 +11,27 @@ export default function AddAccomodations() {
     accommodationName: "",
     numberOfRooms: "",
     description: "",
+    rent: "",
+    wifiAvailable: false,
+    furnished: false,
+    distanceFromCampus: "",
+    utilitiesIncluded: false,
+    roomType: "SINGLE",
+    bathroomType: "SHARED",
+    accommodationStatus: "AVAILABLE",
+    streetNumber: "",
+    streetName: "",
+    suburb: "",
+    city: "",
+    postalCode: "",
   });
 
   const [loading, setLoading] = useState(false);
 
   // Handle input changes
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    const { name, value, type, checked } = e.target;
+    setFormData({ ...formData, [name]: type === 'checkbox' ? checked : value });
   };
 
   // Handle submit
@@ -28,28 +41,28 @@ export default function AddAccomodations() {
 
     // Build request body according to backend model
     const newListing = {
-      rent: 3500, // You can add extra fields later or map from inputs
-      wifiAvailable: true,
-      furnished: false,
-      distanceFromCampus: 2,
-      utilitiesIncluded: false,
-      roomType: "SINGLE",
-      bathroomType: "SHARED",
-      accommodationStatus: "AVAILABLE",
+      accommodationName: formData.accommodationName,
+      numberOfRooms: parseInt(formData.numberOfRooms),
+      rent: parseFloat(formData.rent),
+      wifiAvailable: formData.wifiAvailable,
+      furnished: formData.furnished,
+      distanceFromCampus: parseFloat(formData.distanceFromCampus),
+      utilitiesIncluded: formData.utilitiesIncluded,
+      roomType: formData.roomType,
+      bathroomType: formData.bathroomType,
+      accommodationStatus: formData.accommodationStatus,
       address: {
-        streetNumber: "123",
-        streetName: "Main Street",
-        suburb: "Mowbray",
-        city: "Cape Town",
-        postalCode: 7700,
+        streetNumber: formData.streetNumber,
+        streetName: formData.streetName,
+        suburb: formData.suburb,
+        city: formData.city,
+        postalCode: parseInt(formData.postalCode),
       },
       description: formData.description,
     };
 
     try {
-      const res = await axios.post("http://localhost:8080/Accommodation/create", newListing, {
-        headers: { "Content-Type": "application/json" },
-      });
+      const res = await apiClient.post("/Accommodation/create", newListing);
       console.log("Created:", res.data);
 
       alert("Listing created successfully!");
@@ -131,6 +144,103 @@ export default function AddAccomodations() {
               name="numberOfRooms"
               placeholder="Number of Rooms"
               value={formData.numberOfRooms}
+              onChange={handleChange}
+              required
+            />
+            <input
+              type="number"
+              name="rent"
+              placeholder="Rent Amount"
+              value={formData.rent}
+              onChange={handleChange}
+              required
+            />
+            <input
+              type="number"
+              name="distanceFromCampus"
+              placeholder="Distance from Campus (km)"
+              value={formData.distanceFromCampus}
+              onChange={handleChange}
+              required
+            />
+            <select name="roomType" value={formData.roomType} onChange={handleChange} required>
+              <option value="SINGLE">Single</option>
+              <option value="DOUBLE">Double</option>
+              <option value="SHARED">Shared</option>
+            </select>
+            <select name="bathroomType" value={formData.bathroomType} onChange={handleChange} required>
+              <option value="PRIVATE">Private</option>
+              <option value="SHARED">Shared</option>
+            </select>
+            <select name="accommodationStatus" value={formData.accommodationStatus} onChange={handleChange} required>
+              <option value="AVAILABLE">Available</option>
+              <option value="OCCUPIED">Occupied</option>
+              <option value="MAINTENANCE">Maintenance</option>
+            </select>
+            <label>
+              <input
+                type="checkbox"
+                name="wifiAvailable"
+                checked={formData.wifiAvailable}
+                onChange={handleChange}
+              />
+              WiFi Available
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                name="furnished"
+                checked={formData.furnished}
+                onChange={handleChange}
+              />
+              Furnished
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                name="utilitiesIncluded"
+                checked={formData.utilitiesIncluded}
+                onChange={handleChange}
+              />
+              Utilities Included
+            </label>
+            <input
+              type="text"
+              name="streetNumber"
+              placeholder="Street Number"
+              value={formData.streetNumber}
+              onChange={handleChange}
+              required
+            />
+            <input
+              type="text"
+              name="streetName"
+              placeholder="Street Name"
+              value={formData.streetName}
+              onChange={handleChange}
+              required
+            />
+            <input
+              type="text"
+              name="suburb"
+              placeholder="Suburb"
+              value={formData.suburb}
+              onChange={handleChange}
+              required
+            />
+            <input
+              type="text"
+              name="city"
+              placeholder="City"
+              value={formData.city}
+              onChange={handleChange}
+              required
+            />
+            <input
+              type="number"
+              name="postalCode"
+              placeholder="Postal Code"
+              value={formData.postalCode}
               onChange={handleChange}
               required
             />
@@ -252,7 +362,8 @@ export default function AddAccomodations() {
         }
 
         input,
-        textarea {
+        textarea,
+        select {
           padding: 12px 14px;
           border: 1px solid #ccc;
           border-radius: 8px;
@@ -261,10 +372,18 @@ export default function AddAccomodations() {
         }
 
         input:focus,
-        textarea:focus {
+        textarea:focus,
+        select:focus {
           outline: none;
           border-color: #483ab0;
           box-shadow: 0 0 0 2px rgba(72,58,176,0.2);
+        }
+
+        label {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 15px;
         }
 
         textarea {

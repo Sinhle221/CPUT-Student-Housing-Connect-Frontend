@@ -22,9 +22,13 @@ function LoginForm() {
     }
 
     const result = await login(username, password);
-    
+
     if (result.success) {
-      navigate('/dashboard');
+      if (result.user.role === 'LANDLORD') {
+        navigate('/landlord/dashboard');
+      } else {
+        navigate('/dashboard');
+      }
     } else {
       setError(result.error);
     }

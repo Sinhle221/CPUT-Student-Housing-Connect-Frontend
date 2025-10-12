@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { NavLink, Link } from "react-router-dom";
 import { FaHome, FaList, FaPlusCircle, FaUsers, FaBuilding } from "react-icons/fa";
+import { useAuth } from "../../../contexts/AuthContext";
+import apiClient from "../../../apiClient";
 
 export default function MyAccomodations() {
   const [accommodations, setAccommodations] = useState([]);
+  const { user } = useAuth();
 
   useEffect(() => {
-    fetch("http://localhost:8080/Accommodation/getAllAccommodations")
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch accommodations");
-        return res.json();
-      })
-      .then((data) => setAccommodations(data))
-      .catch((err) => console.error(err));
-  }, []);
+    if (user?.landlordId) {
+      apiClient.get(`/Accommodation/getByLandlord/${user.landlordId}`)
+        .then((res) => setAccommodations(res.data))
+        .catch((err) => console.error("Failed to fetch accommodations:", err));
+    }
+  }, [user]);
 
   return (
     <div className="dashboard-layout">
@@ -67,7 +68,7 @@ export default function MyAccomodations() {
       <main className="main-content">
         <header className="header">
           <h1>My Listings</h1>
-          <Link to="/add-listing">
+          <Link to="/add-accomodation">
             <button className="btn-primary">+ Add Listing</button>
           </Link>
         </header>

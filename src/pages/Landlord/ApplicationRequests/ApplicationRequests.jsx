@@ -1,31 +1,38 @@
 import React, { useEffect, useState } from "react";
 import { NavLink, Link } from "react-router-dom";
 import { FaHome, FaList, FaPlusCircle, FaUsers, FaBuilding } from "react-icons/fa";
-import axios from "axios";
+import apiClient from "../../../apiClient";
+import { useAuth } from "../../../contexts/AuthContext";
 
 export default function ApplicationRequests() {
+  const { user } = useAuth();
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [landlord, setLandlord] = useState(null);
 
-  // Fetch applications from backend
+  // Fetch landlord and applications from backend
   useEffect(() => {
-    const fetchApplications = async () => {
+    const fetchData = async () => {
       try {
-        const res = await axios.get("http://localhost:8080/applications"); // adjust to your endpoint
-        setApplications(res.data);
+        if (user?.landlordId) {
+          const landlordRes = await apiClient.get(`/landlord/${user.landlordId}`);
+          setLandlord(landlordRes.data);
+          const appsRes = await apiClient.get(`/applications/landlord/${user.landlordId}`);
+          setApplications(appsRes.data);
+        }
       } catch (err) {
-        console.error("Error fetching applications:", err);
+        console.error("Error fetching data:", err);
       } finally {
         setLoading(false);
       }
     };
-    fetchApplications();
-  }, []);
+    fetchData();
+  }, [user]);
 
   // Approve application
   const handleApprove = async (id) => {
     try {
-      await axios.put(`http://localhost:8080/applications/${id}/approve`);
+      await apiClient.put(`/applications/${id}/approve`);
       setApplications((prev) =>
         prev.map((app) =>
           app.id === id ? { ...app, status: "APPROVED" } : app
@@ -39,7 +46,7 @@ export default function ApplicationRequests() {
   // Revoke application
   const handleRevoke = async (id) => {
     try {
-      await axios.put(`http://localhost:8080/applications/${id}/revoke`);
+      await apiClient.put(`/applications/${id}/revoke`);
       setApplications((prev) =>
         prev.map((app) =>
           app.id === id ? { ...app, status: "REVOKED" } : app
@@ -58,7 +65,7 @@ export default function ApplicationRequests() {
           <Link to="/landlord-profile" className="profile-link">
             <p className="profile-role">Landlord</p>
             <img src="/profile-pic.jpg" alt="Profile" className="profile-img" />
-            <span className="profile-name">John Doe</span>
+            <span className="profile-name">{landlord ? `${landlord.landlordFirstName} ${landlord.landlordLastName}` : 'Loading...'}</span>
           </Link>
         </div>
 
@@ -69,26 +76,31 @@ export default function ApplicationRequests() {
                 <FaHome /> Dashboard
               </NavLink>
             </li>
-            <li>
-              <NavLink to="/my-listings" end>
-                <FaList /> My Listings
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/add-listing" end>
-                <FaPlusCircle /> Add Listing
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/applications-requests" end className="active-link">
-                <FaUsers /> Applications
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/assign-accommodation" end>
-                <FaBuilding /> Assign Accommodation
-              </NavLink>
-            </li>
+           <li>
+                         <NavLink to="/my-accomodations" end>
+                           <FaList /> My Accomodationss
+                         </NavLink>
+                       </li>
+                       <li>
+                         <NavLink to="/add-accomodation" end>
+                           <FaPlusCircle /> Add Accomodation
+                         </NavLink>
+                       </li>
+                       <li>
+                         <NavLink to="/applications-requests" end>
+                           <FaUsers /> Applications
+                         </NavLink>
+                       </li>
+                       <li>
+                         <NavLink to="/assign-accommodation" end>
+                           <FaBuilding /> Assign Accommodation
+                         </NavLink>
+                       </li>
+                       <li>
+                         <NavLink to="/" >
+                            <FaBuilding /> Logout
+                          </NavLink>
+                          </li>
           </ul>
         </nav>
       </aside>

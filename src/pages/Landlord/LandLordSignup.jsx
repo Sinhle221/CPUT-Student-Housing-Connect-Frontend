@@ -82,19 +82,20 @@ function LandLordSignup() {
         };
 
         try {
-        const response = await fetch('http://localhost:8080/Landlord/create', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
-        });
+            const response = await fetch('http://localhost:8080/HouseConnect/UserAuthentication/api/auth/signup/landlord', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
 
-        if (response.ok) {
-            alert('Registration successful! Welcome to our platform.');
-            navigate('/login');
-        } else {
-            const text = await response.text();
-            alert(`Registration failed: ${text || 'Unknown error occurred'}`);
-        }
+            if (response.ok) {
+                const result = await response.json();
+                alert('Registration successful! Welcome to our platform.');
+                navigate('/login');
+            } else {
+                const errorData = await response.json();
+                alert(`Registration failed: ${errorData.error || 'Unknown error occurred'}`);
+            }
     } catch (error) {
         console.error('Registration error:', error);
         alert('Error connecting to server. Please try again.');

@@ -9,21 +9,39 @@ import {
   FaBell,
   FaSearch,
 } from "react-icons/fa";
+import apiClient from "../../apiClient";
+import { useAuth } from "../../contexts/AuthContext";
 
 export default function Dashboard() {
+  const { user } = useAuth();
   const [accommodations, setAccommodations] = useState([]);
-  const [applications, setApplications] = useState(0); // placeholder until you hook applications API
+  const [applications, setApplications] = useState(0);
+  const [landlord, setLandlord] = useState(null);
 
   useEffect(() => {
-    // Fetch accommodations
-    fetch("http://localhost:8080/Accommodation/getAllAccommodations")
-      .then((res) => res.json())
-      .then((data) => setAccommodations(data))
-      .catch((err) => console.error("Error fetching accommodations:", err));
+    const fetchData = async () => {
+      try {
+        // Fetch accommodations
+        if (user?.landlordId) {
+          const accRes = await apiClient.get(`/Accommodation/getByLandlord/${user.landlordId}`);
+          setAccommodations(accRes.data);
+        }
 
-    // TODO: fetch applications count from your backend when endpoint is ready
-    setApplications(0); // hardcoded for now
-  }, []);
+        // Fetch applications
+        const appRes = await apiClient.get('/applications');
+        setApplications(appRes.data.length);
+
+        // Fetch landlord
+        if (user?.landlordId) {
+          const landRes = await apiClient.get(`/landlord/${user.landlordId}`);
+          setLandlord(landRes.data);
+        }
+      } catch (err) {
+        console.error("Error fetching data:", err);
+      }
+    };
+    fetchData();
+  }, [user]);
 
   // Calculate stats
   const totalListings = accommodations.length;
@@ -46,7 +64,7 @@ export default function Dashboard() {
           <Link to="/landlord-profile" className="profile-link">
             <p className="profile-role">Landlord</p>
             <img src="/profile-pic.jpg" alt="Profile" className="profile-img" />
-            <span className="profile-name">John Doe</span>
+            <span className="profile-name">{landlord ? `${landlord.landlordFirstName} ${landlord.landlordLastName}` : 'Loading...'}</span>
           </Link>
         </div>
 
@@ -101,9 +119,9 @@ export default function Dashboard() {
               <input type="text" placeholder="Search..." />
             </div>
             <FaBell className="icon-btn" />
-            <Link to="/add-listing">
-              <button className="btn-primary">+ Create Listing</button>
-            </Link>
+          <Link to="/add-accomodation">
+            <button className="btn-primary">+ Create Listing</button>
+          </Link>
           </div>
         </header>
 

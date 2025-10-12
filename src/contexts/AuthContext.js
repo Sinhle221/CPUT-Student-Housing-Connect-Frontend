@@ -45,13 +45,19 @@ export const AuthProvider = ({ children }) => {
         
         // Extract student ID if user is a student
         let studentId = null;
+        let landlordId = null;
         if (data.userRole === 'STUDENT' && data.studentId) {
           studentId = data.studentId;
           console.log('Extracted student ID from login response:', studentId); // Debug log
         } else if (data.userRole === 'STUDENT') {
           console.log('No student ID found in login response for student user'); // Debug log
+        } else if (data.userRole === 'LANDLORD' && data.landlordId) {
+          landlordId = data.landlordId;
+          console.log('Extracted landlord ID from login response:', landlordId); // Debug log
+        } else if (data.userRole === 'LANDLORD') {
+          console.log('No landlord ID found in login response for landlord user'); // Debug log
         } else {
-          console.log('No student ID extracted - user is not a student'); // Debug log
+          console.log('No ID extracted - user is neither student nor landlord'); // Debug log
         }
 
         // Store authentication data
@@ -60,18 +66,22 @@ export const AuthProvider = ({ children }) => {
           id: data.authenticationId,
           username: data.username,
           role: data.userRole,
-          studentId: studentId
+          studentId: studentId,
+          landlordId: landlordId
         }));
-        
-        setToken(data.authenticationId);
-        setUser({
+
+        const userData = {
           id: data.authenticationId,
           username: data.username,
           role: data.userRole,
-          studentId: studentId
-        });
-        
-        return { success: true };
+          studentId: studentId,
+          landlordId: landlordId
+        };
+
+        setToken(data.authenticationId);
+        setUser(userData);
+
+        return { success: true, user: userData };
       } else {
         const errorData = await response.json();
         return { success: false, error: errorData.error || 'Login failed' };

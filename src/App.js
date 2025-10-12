@@ -3,15 +3,13 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/shared/ProtectedRoute';
 
-import LandlordLogin from "./pages/Landlord/LandlordAuth/LandlordLogin";
-import LandlordSignUp from "./pages/Landlord/LandlordAuth/LandlordSignUp";
+import LandlordSignUp from "./pages/Landlord/LandLordSignup.jsx";
 import LandlordDashboard from "./pages/Landlord/LandlordDashboard";
 import MyAccomodations from "./pages/Landlord/MyAccomodations/MyAccomodations";
 import AddAccomodation from "./pages/Landlord/AddAccomodation/AddAccomodation";
 import AssignAccommodation from "./pages/Landlord/AssignAccommodation/AssignAccommodation";
 import ApplicationsRequests from "./pages/Landlord/ApplicationRequests/ApplicationRequests";
-import LandlordProfile from "./pages/Landlord/LndlordProfile";
-
+import LandlordProfile from "./pages/Landlord/LandlordProfile.jsx";
 
 import LandingPage from "./pages/Shared/LandingPage";
 import LoginPage from "./pages/Shared/Login";
@@ -20,31 +18,12 @@ import StudentSignUpForm from "./pages/Student/StudentSignUpForm";
 import Contact from "./pages/Shared/Contact";
 import StudentDashboard from "./pages/Student/Dashboard/StudentDashboard.jsx";
 import BookingForm from "./pages/Student/BookingForm.jsx";
-import LandLordSignup from "./pages/Landlord/LandLordSignup";
-
-// Landlord components
-import MyListings from "./pages/Landlord/MyListings/MyListings";
-import AddListing from "./pages/Landlord/AddListings/AddListing";
-import ApplicationRequests from "./pages/Landlord/ApplicationRequests/ApplicationRequests";
-import AssignAccommodation from "./pages/Landlord/AssignAccommodation/AssignAccommodation";
-
-
 
 function App() {
   return (
     <AuthProvider>
       <Router>
         <Routes>
-          {/* Landlord routes */}
-          <Route path="/landlord/login" element={<LoginPage />} />
-          <Route path="/landlord/signup" element={<RoleSelectPage />} />
-          <Route path="/landlord/signup/form" element={<LandLordSignup />} />
-          <Route path="/my-listings" element={<MyListings />} />
-          <Route path="/add-listing" element={<AddListing />} />
-          <Route path="/applications-requests" element={<ApplicationRequests />} />
-          <Route path="/assign-accommodation" element={<AssignAccommodation />} />
-
-<<<<<<< HEAD
           {/* Student routes */}
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
@@ -67,24 +46,19 @@ function App() {
               </ProtectedRoute>
             }
           />
+          {/* Landlord routes */}
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/landlord/signup" element={<LandlordSignUp />} />
+          <Route path="/landlord-profile" element={<LandlordProfile />} />
+          <Route path="/landlord/dashboard" element={<LandlordDashboard />} />
+          <Route path="/my-accomodations" element={<MyAccomodations />} />
+          <Route path="/add-accomodation" element={<AddAccomodation />} />
+          <Route path="/applications-requests" element={<ApplicationsRequests />} />
+          <Route path="/assign-accommodation" element={<AssignAccommodation />} />
         </Routes>
       </Router>
     </AuthProvider>
-=======
-        {/* Landlord routes */}
-        <Route path="/landlord/login" element={<LandlordLogin />} />
-        <Route path="/landlord/signup" element={<LandlordSignUp />} />
-        <Route path="/landlord-profile" element={<LandlordProfile />} />
-        <Route path="/landlord/dashboard" element={<LandlordDashboard />} />
-        <Route path="/my-accomodations" element={<MyAccomodations />} />
-        <Route path="/add-accomodation" element={<AddAccomodation />} />
-        <Route path="/applications-requests" element={<ApplicationsRequests />} />
-        <Route path="/assign-accommodation" element={<AssignAccommodation />} />
-
-      </Routes>
-    </Router>
->>>>>>> 8f2d3e0 (rename)
   );
 }
-
 export default App;
+

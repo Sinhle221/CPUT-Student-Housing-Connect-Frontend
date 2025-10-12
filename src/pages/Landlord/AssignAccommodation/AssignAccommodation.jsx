@@ -95,25 +95,30 @@ export default function AssignAccommodation() {
               </NavLink>
             </li>
             <li>
-              <NavLink to="/my-listings" end>
-                <FaList /> My Listings
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/add-listing" end>
-                <FaPlusCircle /> Add Listing
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/applications-requests" end>
-                <FaUsers /> Applications
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/assign-accommodation" end className="active-link">
-                <FaBuilding /> Assign Accommodation
-              </NavLink>
-            </li>
+                          <NavLink to="/my-accomodations" end>
+                            <FaList /> My Accomodationss
+                          </NavLink>
+                        </li>
+                        <li>
+                          <NavLink to="/add-accomodation" end>
+                            <FaPlusCircle /> Add Accomodation
+                          </NavLink>
+                        </li>
+                        <li>
+                          <NavLink to="/applications-requests" end>
+                            <FaUsers /> Applications
+                          </NavLink>
+                        </li>
+                        <li>
+                          <NavLink to="/assign-accommodation" end>
+                            <FaBuilding /> Assign Accommodation
+                          </NavLink>
+                        </li>
+                        <li>
+                          <NavLink to="/" >
+                             <FaBuilding /> Logout
+                           </NavLink>
+                           </li>
           </ul>
         </nav>
       </aside>

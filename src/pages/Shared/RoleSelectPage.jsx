@@ -15,7 +15,7 @@ function RoleSelectPage({ onRoleSelect }) {
     if (role === 'student') {
       navigate('/signup/student');
     } else if (role === 'landlord') {
-      navigate('/landlord/signup/form');
+      navigate("/landlord/signup");
     } else if (role) {
       alert(`Selected role: ${role} (navigation not implemented yet)`);
     } else {
